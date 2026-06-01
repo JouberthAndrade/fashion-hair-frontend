@@ -29,11 +29,10 @@ import { PhoneInput } from '@/components/shared/PhoneInput';
 
 import { listServices } from '@/api/services';
 import { listCollaborators } from '@/api/collaborators';
-import { resolveClientPrice } from '@/api/clientPrices';
 import { useAuthStore } from '@/stores/authStore';
 import { useCreateAppointment } from './useAppointmentMutations';
 import { todayISO, formatCurrency } from '@/lib/date';
-import { clientKeys, collaboratorKeys, serviceKeys } from '@/lib/queryKeys';
+import { collaboratorKeys, serviceKeys } from '@/lib/queryKeys';
 import { isValidBRPhone } from '@/lib/phone';
 
 const schema = z
@@ -43,10 +42,6 @@ const schema = z
     scheduledDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Data inválida'),
     startTime: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Horário inválido (HH:MM)'),
     notes: z.string().max(500).optional().or(z.literal('')),
-    price: z
-      .string()
-      .optional()
-      .refine((v) => !v || Number(v) > 0, 'Preço deve ser maior que zero'),
     clientMode: z.enum(['existing', 'new']),
     clientId: z.string().optional(),
     newClientName: z.string().optional(),
@@ -123,7 +118,6 @@ export function CreateAppointmentDialog({
       scheduledDate: defaultDate ?? todayISO(),
       startTime: '',
       notes: '',
-      price: '',
       clientMode: 'existing',
       clientId: '',
       newClientName: '',
@@ -140,7 +134,6 @@ export function CreateAppointmentDialog({
         scheduledDate: defaultDate ?? todayISO(),
         startTime: '',
         notes: '',
-        price: '',
         clientMode: 'existing',
         clientId: '',
         newClientName: '',
@@ -152,35 +145,15 @@ export function CreateAppointmentDialog({
 
   const watchedServiceId = useWatch({ control, name: 'serviceId' });
   const clientMode = useWatch({ control, name: 'clientMode' });
-  const watchedClientId = useWatch({ control, name: 'clientId' });
   const selectedService = services.find((s) => s.id === watchedServiceId);
 
-  // Sugestão de preço: cliente existente → resolve (book ou padrão); novo cliente → padrão do serviço.
-  const { data: resolvedPrice } = useQuery({
-    queryKey: clientKeys.priceResolve(watchedClientId ?? '', watchedServiceId ?? ''),
-    queryFn: () => resolveClientPrice(watchedClientId!, watchedServiceId!),
-    enabled: open && clientMode === 'existing' && Boolean(watchedClientId) && Boolean(watchedServiceId),
-  });
-
-  useEffect(() => {
-    if (resolvedPrice) setValue('price', String(resolvedPrice.price));
-  }, [resolvedPrice, setValue]);
-
-  useEffect(() => {
-    if (clientMode === 'new' && selectedService) {
-      setValue('price', String(Number(selectedService.price)));
-    }
-  }, [clientMode, selectedService, setValue]);
-
   const onSubmit = (values: FormValues) => {
-    const priceNum = values.price && Number(values.price) > 0 ? Number(values.price) : undefined;
     const base = {
       collaboratorId: values.collaboratorId,
       serviceId: values.serviceId,
       scheduledDate: values.scheduledDate,
       startTime: values.startTime,
       notes: values.notes?.trim() ? values.notes.trim() : undefined,
-      price: priceNum,
     };
     const clientPart =
       values.clientMode === 'existing'
@@ -254,33 +227,12 @@ export function CreateAppointmentDialog({
             />
             {selectedService ? (
               <p className="text-xs text-muted-foreground">
-                Duração: {selectedService.durationMin} min · {formatCurrency(selectedService.price)}
+                Duração: {selectedService.durationMin} min · Preço do serviço:{' '}
+                {formatCurrency(selectedService.price)}
               </p>
             ) : null}
             {errors.serviceId ? (
               <p className="text-xs text-destructive">{errors.serviceId.message}</p>
-            ) : null}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="price">Preço cobrado (R$)</Label>
-            <Input
-              id="price"
-              type="number"
-              step="0.01"
-              min="0"
-              placeholder={selectedService ? String(Number(selectedService.price)) : '0,00'}
-              {...register('price')}
-            />
-            {selectedService ? (
-              <p className="text-xs text-muted-foreground">
-                {resolvedPrice?.source === 'book'
-                  ? 'Preço especial deste cliente (ajuste se necessário).'
-                  : `Preço padrão: ${formatCurrency(selectedService.price)} — ajuste se negociar outro valor.`}
-              </p>
-            ) : null}
-            {errors.price ? (
-              <p className="text-xs text-destructive">{errors.price.message}</p>
             ) : null}
           </div>
 

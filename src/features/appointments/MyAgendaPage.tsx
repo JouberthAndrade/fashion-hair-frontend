@@ -83,7 +83,9 @@ export function MyAgendaPage() {
         />
       ) : (
         <div className="space-y-3">
-          {sorted.map((appt) => (
+          {sorted.map((appt) => {
+            const displayPrice = appt.priceAtBooking ?? appt.service?.price;
+            return (
             <Card key={appt.id}>
               <CardContent className="flex flex-wrap items-center gap-4 p-4">
                 <div className="min-w-[88px] text-center">
@@ -102,7 +104,9 @@ export function MyAgendaPage() {
                         <Phone className="h-3 w-3" /> {appt.client.phone}
                       </span>
                     ) : null}
-                    {appt.service?.price ? <span>{formatCurrency(appt.service.price)}</span> : null}
+                    {displayPrice != null ? (
+                      <span>{formatCurrency(displayPrice)}</span>
+                    ) : null}
                   </div>
                   {appt.notes ? (
                     <p className="mt-1 text-xs italic text-muted-foreground">{appt.notes}</p>
@@ -111,7 +115,8 @@ export function MyAgendaPage() {
                 <AppointmentActionsMenu appointment={appt} />
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
         </div>
       )}
 
