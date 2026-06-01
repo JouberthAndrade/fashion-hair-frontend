@@ -14,6 +14,7 @@ import {
   useCancelAppointment,
   useUpdateAppointmentStatus,
 } from './useAppointmentMutations';
+import { CheckoutDoneDialog } from './CheckoutDoneDialog';
 import { getStatusTransitions } from './statusTransitions';
 import { confirm } from '@/components/shared/confirm';
 import { STATUS_LABELS } from '@/lib/enumLabels';
@@ -25,6 +26,7 @@ interface Props {
 
 export function AppointmentActionsMenu({ appointment }: Props) {
   const [open, setOpen] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const updateStatus = useUpdateAppointmentStatus();
   const cancelAppt = useCancelAppointment();
   const transitions = getStatusTransitions(appointment.status);
@@ -35,6 +37,7 @@ export function AppointmentActionsMenu({ appointment }: Props) {
   }
 
   return (
+    <>
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" disabled={isPending} aria-label="Ações">
@@ -49,12 +52,19 @@ export function AppointmentActionsMenu({ appointment }: Props) {
           .map((status) => (
             <DropdownMenuItem
               key={status}
-              onSelect={() =>
+              onSelect={() => {
+                // Concluir abre o checkout (ajuste do preço final); demais
+                // transições são aplicadas diretamente.
+                if (status === 'DONE') {
+                  setOpen(false);
+                  setCheckoutOpen(true);
+                  return;
+                }
                 updateStatus.mutate(
                   { id: appointment.id, status },
                   { onSettled: () => setOpen(false) },
-                )
-              }
+                );
+              }}
             >
               {STATUS_LABELS[status]}
             </DropdownMenuItem>
@@ -82,5 +92,11 @@ export function AppointmentActionsMenu({ appointment }: Props) {
         ) : null}
       </DropdownMenuContent>
     </DropdownMenu>
+    <CheckoutDoneDialog
+      appointment={appointment}
+      open={checkoutOpen}
+      onOpenChange={setCheckoutOpen}
+    />
+    </>
   );
 }

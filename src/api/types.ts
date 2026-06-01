@@ -107,9 +107,34 @@ export interface Appointment {
   endTime: string;
   status: AppointmentStatus;
   notes: string | null;
+  // Snapshots de preço/taxa (Decimal serializado como string). A taxa é
+  // resolvida no servidor; nunca enviada pelo colaborador.
+  priceAtBooking?: string | null;
+  standardPriceAtBooking?: string | null;
+  salonFeeRateAtBooking?: string | null;
+  priceSetById?: string | null;
   client?: Pick<Client, 'id' | 'name' | 'phone'>;
   service?: Pick<Service, 'id' | 'name' | 'durationMin' | 'price'>;
   collaborator?: { id: string; name: string };
+}
+
+/** Preço negociado de um cliente para um serviço (price book). */
+export interface ClientServicePrice {
+  serviceId: string;
+  serviceName: string;
+  price: number;
+  standardPrice: number;
+  updatedById: string | null;
+  updatedAt: string;
+}
+
+/** Preço sugerido resolvido para (cliente, serviço): do book ou o padrão. */
+export interface ResolvedClientPrice {
+  serviceId: string;
+  serviceName: string;
+  price: number;
+  standardPrice: number;
+  source: 'book' | 'standard';
 }
 
 export interface DailyDashboardResponse {
