@@ -44,6 +44,18 @@ const MyProfilePage = lazyNamed(
   () => import('@/features/profile/MyProfilePage'),
   'MyProfilePage',
 );
+const PublicBookingPage = lazyNamed(
+  () => import('@/features/public-booking/PublicBookingPage'),
+  'PublicBookingPage',
+);
+const PublicBookingLayout = lazyNamed(
+  () => import('@/features/public-booking/PublicBookingLayout'),
+  'PublicBookingLayout',
+);
+const PrivacyPolicyPage = lazyNamed(
+  () => import('@/features/public-booking/PrivacyPolicyPage'),
+  'PrivacyPolicyPage',
+);
 
 function HomeRedirect() {
   const role = useAuthStore((s) => s.user?.role);
@@ -57,6 +69,13 @@ function withSuspense(node: ReactNode) {
 
 export const router = createBrowserRouter([
   { path: '/login', element: withSuspense(<LoginPage />) },
+  {
+    element: withSuspense(<PublicBookingLayout />),
+    children: [
+      { path: '/agendar', element: withSuspense(<PublicBookingPage />) },
+      { path: '/agendar/privacidade', element: withSuspense(<PrivacyPolicyPage />) },
+    ],
+  },
   {
     element: <ProtectedRoute />,
     children: [

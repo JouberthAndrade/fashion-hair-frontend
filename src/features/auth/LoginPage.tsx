@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -91,6 +91,13 @@ export function LoginPage() {
                 'Entrar'
               )}
             </Button>
+
+            <p className="text-center text-sm text-muted-foreground">
+              É cliente?{' '}
+              <Link to="/agendar" className="font-medium text-primary underline-offset-4 hover:underline">
+                Agendar online
+              </Link>
+            </p>
           </form>
         </CardContent>
       </Card>

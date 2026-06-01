@@ -65,3 +65,13 @@ export const cashClosingKeys = {
     [...cashClosingKeys.all, 'report', period, date] as const,
   history: () => [...cashClosingKeys.all, 'history'] as const,
 };
+
+export const publicBookingKeys = {
+  all: ['public-booking'] as const,
+  services: () => [...publicBookingKeys.all, 'services'] as const,
+  collaborators: (serviceId: string) =>
+    [...publicBookingKeys.all, 'collaborators', serviceId] as const,
+  availability: (collaboratorId: string, serviceId: string, date: string) =>
+    [...publicBookingKeys.all, 'availability', collaboratorId, serviceId, date] as const,
+  privacyPolicy: () => [...publicBookingKeys.all, 'privacy-policy'] as const,
+};
