@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 
 import {
@@ -12,8 +13,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { resolveClientPrice } from '@/api/clientPrices';
 import { useUpdateAppointmentStatus } from './useAppointmentMutations';
 import { formatCurrency } from '@/lib/date';
+import { clientKeys } from '@/lib/queryKeys';
 import type { Appointment } from '@/api/types';
 
 interface Props {
@@ -24,24 +27,40 @@ interface Props {
 
 /**
  * Conclui o atendimento (status DONE) permitindo confirmar/ajustar o preço
- * final cobrado. A taxa do salão NÃO aparece aqui — segue exclusiva do ADMIN.
+ * final cobrado. A taxa do salão NÃO aparece aqui — segura exclusiva do ADMIN.
  */
 export function CheckoutDoneDialog({ appointment, open, onOpenChange }: Props) {
   const updateStatus = useUpdateAppointmentStatus();
-  const suggested = String(appointment.priceAtBooking ?? appointment.service?.price ?? '');
-  const [price, setPrice] = useState(suggested);
 
-  // Reajusta o valor sugerido ao (re)abrir — padrão "ajustar estado quando a
-  // prop muda" feito na renderização, sem useEffect.
-  const [wasOpen, setWasOpen] = useState(open);
-  if (open !== wasOpen) {
-    setWasOpen(open);
-    if (open) setPrice(suggested);
-  }
+  const standard =
+    appointment.standardPriceAtBooking ?? appointment.service?.price ?? null;
+
+  const { data: resolvedPrice } = useQuery({
+    queryKey: clientKeys.priceResolve(appointment.clientId, appointment.serviceId),
+    queryFn: () => resolveClientPrice(appointment.clientId, appointment.serviceId),
+    enabled: open,
+  });
+
+  const [price, setPrice] = useState('');
+
+  useEffect(() => {
+    if (!open) return;
+    const suggested =
+      resolvedPrice?.source === 'book'
+        ? resolvedPrice.price
+        : (appointment.priceAtBooking ?? appointment.service?.price ?? '');
+    setPrice(String(suggested));
+  }, [
+    open,
+    appointment.id,
+    appointment.priceAtBooking,
+    appointment.service?.price,
+    resolvedPrice?.price,
+    resolvedPrice?.source,
+  ]);
 
   const num = Number(price);
   const invalid = !price || Number.isNaN(num) || num <= 0;
-  const standard = appointment.standardPriceAtBooking ?? appointment.service?.price;
 
   const handleConfirm = () => {
     updateStatus.mutate(
@@ -73,7 +92,12 @@ export function CheckoutDoneDialog({ appointment, open, onOpenChange }: Props) {
           />
           {standard != null ? (
             <p className="text-xs text-muted-foreground">
-              Preço padrão do serviço: {formatCurrency(standard)}
+              Preço sugerido (padrão): {formatCurrency(standard)}
+            </p>
+          ) : null}
+          {resolvedPrice?.source === 'book' ? (
+            <p className="text-xs text-muted-foreground">
+              Preço especial deste cliente: {formatCurrency(resolvedPrice.price)}
             </p>
           ) : null}
           {invalid ? (

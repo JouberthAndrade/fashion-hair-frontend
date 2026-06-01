@@ -7,7 +7,7 @@ export interface CreateAppointmentPayload {
   scheduledDate: string; // YYYY-MM-DD
   startTime: string; // HH:MM
   notes?: string;
-  price?: number; // preço cobrado definido pelo colaborador (> 0); omitido = padrão/book
+  price?: number; // omitido na criação: preço do catálogo do serviço
   clientId?: string;
   newClient?: { name: string; phone: string; email?: string };
 }
