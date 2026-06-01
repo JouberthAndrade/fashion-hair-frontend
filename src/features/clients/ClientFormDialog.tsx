@@ -19,6 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { PhoneInput } from '@/components/shared/PhoneInput';
+import { ClientPriceBook } from './ClientPriceBook';
 import { createClient, updateClient } from '@/api/clients';
 import { getApiErrorMessage } from '@/api/client';
 import { clientKeys } from '@/lib/queryKeys';
@@ -88,7 +89,7 @@ export function ClientFormDialog({ open, onOpenChange, client }: ClientFormDialo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{isEditing ? 'Editar cliente' : 'Novo cliente'}</DialogTitle>
           <DialogDescription>Dados de contato do cliente.</DialogDescription>
@@ -135,6 +136,18 @@ export function ClientFormDialog({ open, onOpenChange, client }: ClientFormDialo
             </Button>
           </DialogFooter>
         </form>
+
+        {isEditing && client ? (
+          <div className="mt-2 space-y-3 border-t pt-4">
+            <div>
+              <h3 className="text-sm font-medium">Preços do cliente</h3>
+              <p className="text-xs text-muted-foreground">
+                Preço negociado por serviço. Vazio = usa o preço padrão.
+              </p>
+            </div>
+            <ClientPriceBook clientId={client.id} />
+          </div>
+        ) : null}
       </DialogContent>
     </Dialog>
   );

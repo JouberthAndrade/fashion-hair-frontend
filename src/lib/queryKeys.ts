@@ -20,6 +20,9 @@ export const clientKeys = {
     [...clientKeys.lists(), filters] as const,
   combobox: (search: string) => [...clientKeys.all, 'combobox', search] as const,
   detail: (id: string) => [...clientKeys.all, 'detail', id] as const,
+  prices: (id: string) => [...clientKeys.detail(id), 'prices'] as const,
+  priceResolve: (id: string, serviceId: string) =>
+    [...clientKeys.detail(id), 'prices', serviceId] as const,
 };
 
 export const serviceKeys = {

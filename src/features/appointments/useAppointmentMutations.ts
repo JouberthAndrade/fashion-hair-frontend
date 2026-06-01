@@ -6,6 +6,7 @@ import {
   rescheduleAppointment,
   updateAppointmentStatus,
   type CreateAppointmentPayload,
+  type ReschedulePayload,
 } from '@/api/appointments';
 import { getApiErrorMessage } from '@/api/client';
 import { appointmentKeys, dashboardKeys } from '@/lib/queryKeys';
@@ -31,8 +32,15 @@ export function useCreateAppointment() {
 export function useUpdateAppointmentStatus() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: AppointmentStatus }) =>
-      updateAppointmentStatus(id, status),
+    mutationFn: ({
+      id,
+      status,
+      price,
+    }: {
+      id: string;
+      status: AppointmentStatus;
+      price?: number;
+    }) => updateAppointmentStatus(id, status, price),
     onSuccess: () => {
       toast.success('Status atualizado.');
       invalidate(qc);
@@ -44,13 +52,8 @@ export function useUpdateAppointmentStatus() {
 export function useRescheduleAppointment() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      id,
-      payload,
-    }: {
-      id: string;
-      payload: { scheduledDate?: string; startTime?: string; serviceId?: string; notes?: string };
-    }) => rescheduleAppointment(id, payload),
+    mutationFn: ({ id, payload }: { id: string; payload: ReschedulePayload }) =>
+      rescheduleAppointment(id, payload),
     onSuccess: () => {
       toast.success('Agendamento atualizado.');
       invalidate(qc);

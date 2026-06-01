@@ -7,8 +7,17 @@ export interface CreateAppointmentPayload {
   scheduledDate: string; // YYYY-MM-DD
   startTime: string; // HH:MM
   notes?: string;
+  price?: number; // preço cobrado definido pelo colaborador (> 0); omitido = padrão/book
   clientId?: string;
   newClient?: { name: string; phone: string; email?: string };
+}
+
+export interface ReschedulePayload {
+  scheduledDate?: string;
+  startTime?: string;
+  serviceId?: string;
+  notes?: string;
+  price?: number;
 }
 
 export async function listMyAppointments(date: string): Promise<Appointment[]> {
@@ -28,14 +37,21 @@ export async function createAppointment(payload: CreateAppointmentPayload): Prom
 
 export async function rescheduleAppointment(
   id: string,
-  payload: { scheduledDate?: string; startTime?: string; serviceId?: string; notes?: string },
+  payload: ReschedulePayload,
 ): Promise<Appointment> {
   const { data } = await api.patch<Appointment>(`/appointments/${id}`, payload);
   return data;
 }
 
-export async function updateAppointmentStatus(id: string, status: AppointmentStatus): Promise<Appointment> {
-  const { data } = await api.patch<Appointment>(`/appointments/${id}/status`, { status });
+export async function updateAppointmentStatus(
+  id: string,
+  status: AppointmentStatus,
+  price?: number,
+): Promise<Appointment> {
+  const { data } = await api.patch<Appointment>(`/appointments/${id}/status`, {
+    status,
+    ...(price != null ? { price } : {}),
+  });
   return data;
 }
 
