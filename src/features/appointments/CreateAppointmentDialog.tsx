@@ -32,7 +32,7 @@ import { listCollaborators } from '@/api/collaborators';
 import { useAuthStore } from '@/stores/authStore';
 import { useCreateAppointment } from './useAppointmentMutations';
 import { todayISO, formatCurrency } from '@/lib/date';
-import { clientKeys, collaboratorKeys, serviceKeys } from '@/lib/queryKeys';
+import { collaboratorKeys, serviceKeys } from '@/lib/queryKeys';
 import { isValidBRPhone } from '@/lib/phone';
 
 const schema = z
