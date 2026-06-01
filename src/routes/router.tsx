@@ -44,6 +44,10 @@ const MyProfilePage = lazyNamed(
   () => import('@/features/profile/MyProfilePage'),
   'MyProfilePage',
 );
+const TutorialPage = lazyNamed(
+  () => import('@/features/tutorial/TutorialPage'),
+  'TutorialPage',
+);
 const PublicBookingPage = lazyNamed(
   () => import('@/features/public-booking/PublicBookingPage'),
   'PublicBookingPage',
@@ -89,6 +93,7 @@ export const router = createBrowserRouter([
           { path: '/colaboradores', element: withSuspense(<CollaboratorsPage />) },
           { path: '/painel', element: withSuspense(<SalonDisplayPage />) },
           { path: '/perfil', element: withSuspense(<MyProfilePage />) },
+          { path: '/tutorial', element: withSuspense(<TutorialPage />) },
           {
             element: <ProtectedRoute allowedRoles={['ADMIN']} />,
             children: [
