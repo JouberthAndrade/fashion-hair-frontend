@@ -11,7 +11,9 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { PageHeader } from '@/components/shared/PageHeader';
+import { AppTutorial } from '@/components/shared/AppTutorial';
 import { StatusBadge } from '@/components/shared/StatusBadge';
+import { useAuthStore } from '@/stores/authStore';
 import { todayISO, formatDateLong, formatCurrency } from '@/lib/date';
 import { CreateAppointmentDialog } from './CreateAppointmentDialog';
 import { AppointmentActionsMenu } from './AppointmentActionsMenu';
@@ -24,6 +26,7 @@ function sortByStartTime(items: Appointment[]) {
 export function MyAgendaPage() {
   const [date, setDate] = useState(todayISO());
   const [dialogOpen, setDialogOpen] = useState(false);
+  const role = useAuthStore((s) => s.user?.role);
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: appointmentKeys.myAgenda(date),
@@ -57,6 +60,8 @@ export function MyAgendaPage() {
           </>
         }
       />
+
+      {role ? <AppTutorial role={role} /> : null}
 
       {isLoading ? (
         <div className="space-y-3">

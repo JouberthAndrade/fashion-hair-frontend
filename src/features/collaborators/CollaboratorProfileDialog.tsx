@@ -89,6 +89,7 @@ export function CollaboratorProfileDialog({ open, onOpenChange, collaborator }: 
     onSuccess: () => {
       toast.success('Perfil atualizado.');
       qc.invalidateQueries({ queryKey: collaboratorKeys.all });
+      qc.invalidateQueries({ queryKey: collaboratorKeys.detail(collaborator.id) });
       onOpenChange(false);
     },
     onError: (err) => toast.error(getApiErrorMessage(err, 'Falha ao salvar perfil')),
