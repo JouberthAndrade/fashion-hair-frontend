@@ -112,8 +112,15 @@ const collaboratorSections: Section[] = [
     intro: 'Mantenha seu perfil atualizado para que os clientes saibam sua especialidade.',
     steps: [
       { text: 'Clique em "Meu perfil" no menu lateral.' },
-      { text: 'Atualize sua foto, nome e bio conforme necessário.' },
-      { text: 'Salve as alterações clicando no botão de confirmação.' },
+      {
+        text: 'Na seção "Dados da conta", atualize seu nome de exibição.',
+        detail: 'O nome é exibido na agenda e no painel do salão.',
+      },
+      {
+        text: 'No card "Perfil profissional", clique em "Editar" para atualizar foto, especialidade e bio.',
+        detail: 'Especialidades disponíveis: Cabeleireiro(a), Manicure, Pedicure, Maquiador(a), Sobrancelha, Esteticista.',
+      },
+      { text: 'Salve cada seção individualmente clicando no botão de confirmação correspondente.' },
       {
         text: 'Para alterar a senha, use a seção "Alterar senha" na mesma página.',
         detail: 'Digite a senha atual e a nova senha (mínimo 6 caracteres).',
@@ -126,10 +133,9 @@ const collaboratorSections: Section[] = [
     title: 'Configurar horários de trabalho',
     intro: 'Defina os dias e horários em que você está disponível para atendimento.',
     steps: [
-      { text: 'No menu lateral, clique em "Colaboradores".' },
-      { text: 'Localize seu próprio card e clique em "Editar".' },
+      { text: 'Clique em "Meu perfil" no menu lateral.' },
       {
-        text: 'Na seção "Horários de trabalho", ative os dias que você trabalha.',
+        text: 'Role até o card "Horários de atendimento" e ative os dias que você trabalha.',
         detail: 'Para cada dia ativo, defina o horário de início e de fim do expediente.',
       },
       { text: 'Salve as alterações. Os novos horários passam a valer imediatamente para novos agendamentos.' },
@@ -146,7 +152,7 @@ const collaboratorSections: Section[] = [
       { text: 'Serviços ativos ficam na aba principal; inativos ficam em uma aba separada.' },
       { text: 'Use as informações de duração para planejar sua agenda com mais precisão.' },
     ],
-    tip: 'Apenas administradores podem criar, editar ou desativar serviços.',
+    tip: 'Você pode consultar os serviços, mas somente administradores podem criar, editar ou desativar serviços.',
   },
   {
     id: 'painel-collab',

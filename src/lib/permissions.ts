@@ -1,9 +1,11 @@
 import type { UserRole } from '@/api/types';
 
-/** Rotas acessíveis apenas por administradores. */
+/**
+ * Rotas acessíveis apenas por administradores.
+ * Colaboradores podem acessar /painel (somente leitura) e /servicos (consulta),
+ * portanto essas rotas não fazem parte desta lista.
+ */
 export const ADMIN_ROUTES = [
-  '/painel',
-  '/servicos',
   '/colaboradores',
   '/usuarios',
   '/fechamento-caixa',
