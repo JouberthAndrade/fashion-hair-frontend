@@ -11,6 +11,7 @@ import {
   Menu,
   UserRound,
   Wallet,
+  BookOpen,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { logout } from '@/api/auth';
@@ -29,6 +30,7 @@ const navItems: NavItem[] = [
   { to: '/servicos', label: 'Serviços', icon: Scissors },
   { to: '/colaboradores', label: 'Colaboradores', icon: UserCog },
   { to: '/usuarios', label: 'Usuários', icon: ShieldCheck },
+  { to: '/tutorial', label: 'Tutorial', icon: BookOpen },
   { to: '/perfil', label: 'Meu perfil', icon: UserRound },
 ];
 
