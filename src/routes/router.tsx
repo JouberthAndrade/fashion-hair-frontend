@@ -89,14 +89,14 @@ export const router = createBrowserRouter([
           { path: '/', element: <HomeRedirect /> },
           { path: '/agenda', element: withSuspense(<MyAgendaPage />) },
           { path: '/clientes', element: withSuspense(<ClientsPage />) },
-          { path: '/servicos', element: withSuspense(<ServicesPage />) },
-          { path: '/colaboradores', element: withSuspense(<CollaboratorsPage />) },
-          { path: '/painel', element: withSuspense(<SalonDisplayPage />) },
           { path: '/perfil', element: withSuspense(<MyProfilePage />) },
           { path: '/tutorial', element: withSuspense(<TutorialPage />) },
           {
             element: <ProtectedRoute allowedRoles={['ADMIN']} />,
             children: [
+              { path: '/painel', element: withSuspense(<SalonDisplayPage />) },
+              { path: '/servicos', element: withSuspense(<ServicesPage />) },
+              { path: '/colaboradores', element: withSuspense(<CollaboratorsPage />) },
               { path: '/usuarios', element: withSuspense(<UsersPage />) },
               { path: '/fechamento-caixa', element: withSuspense(<CashClosingPage />) },
             ],

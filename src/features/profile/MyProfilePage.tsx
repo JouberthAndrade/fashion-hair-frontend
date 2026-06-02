@@ -6,15 +6,25 @@ import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { useAuth } from '@/hooks/useAuth';
 import { ChangePasswordCard } from './ChangePasswordCard';
+import { CollaboratorProfileSection } from './CollaboratorProfileSection';
 
 export function MyProfilePage() {
   const { user, isLoggingOut, logout } = useAuth();
 
   if (!user) return <Navigate to="/login" replace />;
 
+  const isCollaborator = user.role === 'COLLABORATOR';
+
   return (
     <>
-      <PageHeader title="Meu perfil" description="Suas informações de acesso." />
+      <PageHeader
+        title="Meu perfil"
+        description={
+          isCollaborator
+            ? 'Suas informações de acesso, perfil profissional e horários.'
+            : 'Suas informações de acesso.'
+        }
+      />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
@@ -51,6 +61,8 @@ export function MyProfilePage() {
         </Card>
 
         <ChangePasswordCard userId={user.id} />
+
+        {isCollaborator ? <CollaboratorProfileSection userId={user.id} /> : null}
       </div>
     </>
   );

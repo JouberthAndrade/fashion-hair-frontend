@@ -15,20 +15,21 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { logout } from '@/api/auth';
+import { canAccessRoute } from '@/lib/permissions';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
-type NavItem = { to: string; label: string; icon: typeof CalendarDays; adminOnly?: boolean };
+type NavItem = { to: string; label: string; icon: typeof CalendarDays };
 
 const navItems: NavItem[] = [
   { to: '/painel', label: 'Painel do salão', icon: Monitor },
-  { to: '/fechamento-caixa', label: 'Fechamento de caixa', icon: Wallet, adminOnly: true },
+  { to: '/fechamento-caixa', label: 'Fechamento de caixa', icon: Wallet },
   { to: '/agenda', label: 'Minha agenda', icon: CalendarDays },
   { to: '/clientes', label: 'Clientes', icon: UsersIcon },
   { to: '/servicos', label: 'Serviços', icon: Scissors },
   { to: '/colaboradores', label: 'Colaboradores', icon: UserCog },
-  { to: '/usuarios', label: 'Usuários', icon: ShieldCheck, adminOnly: true },
+  { to: '/usuarios', label: 'Usuários', icon: ShieldCheck },
   { to: '/tutorial', label: 'Tutorial', icon: BookOpen },
   { to: '/perfil', label: 'Meu perfil', icon: UserRound },
 ];
@@ -38,7 +39,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <nav className="flex flex-col gap-1 p-3">
       {navItems
-        .filter((i) => !i.adminOnly || role === 'ADMIN')
+        .filter((i) => canAccessRoute(role, i.to))
         .map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
