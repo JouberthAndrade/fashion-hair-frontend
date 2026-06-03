@@ -6,6 +6,8 @@ import type { UserRole } from '@/api/types';
  * portanto essas rotas não fazem parte desta lista.
  */
 export const ADMIN_ROUTES = [
+  '/painel',
+  '/servicos',
   '/colaboradores',
   '/usuarios',
   '/fechamento-caixa',

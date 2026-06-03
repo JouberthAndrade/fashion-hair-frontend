@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { logout } from '@/api/auth';
+import { queryClient } from '@/lib/queryClient';
 import { canAccessRoute } from '@/lib/permissions';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -71,6 +72,7 @@ export function AppLayout() {
     } catch {
       // ignore — we still clear locally
     } finally {
+      queryClient.clear();
       clear();
       navigate('/login', { replace: true });
     }

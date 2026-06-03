@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { login as loginRequest, logout as logoutRequest } from '@/api/auth';
 import { getApiErrorMessage } from '@/api/client';
 import { useAuthStore } from '@/stores/authStore';
+import { queryClient } from '@/lib/queryClient';
 
 export function useAuth() {
   const { user, accessToken, setSession, clear, refreshToken } = useAuthStore();
@@ -13,6 +14,7 @@ export function useAuth() {
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       loginRequest(email, password),
     onSuccess: (data) => {
+      queryClient.clear();
       setSession({
         user: data.user,
         accessToken: data.accessToken,
@@ -37,6 +39,7 @@ export function useAuth() {
       }
     },
     onSettled: () => {
+      queryClient.clear();
       clear();
       navigate('/login', { replace: true });
     },
