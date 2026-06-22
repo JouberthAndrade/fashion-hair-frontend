@@ -3,33 +3,44 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-background: hsl(0 0% 100%);
-  --color-foreground: hsl(240 10% 3.9%);
+  /* Warm off-white surfaces aligned to the brand */
+  --color-background: #f9f7f4;
+  --color-foreground: hsl(20 6% 12%);
 
-  --color-primary: hsl(262 83% 58%);
-  --color-primary-foreground: hsl(0 0% 100%);
+  /* Brand palette (extracted from the Fashion Hair logo) */
+  --color-gold: #c9a84c;
+  --color-gold-light: #e8c97a;
+  --color-gold-muted: rgba(201, 168, 76, 0.15);
+  --color-brand-dark: #1a1a1a;
+  --color-surface: #f9f7f4;
+  --color-surface-card: #ffffff;
 
-  --color-secondary: hsl(240 4.8% 95.9%);
-  --color-secondary-foreground: hsl(240 5.9% 10%);
+  /* Primary stays a neutral dark; gold is used as a pinpoint accent. */
+  --color-primary: var(--color-brand-dark);
+  --color-primary-foreground: #ffffff;
 
-  --color-muted: hsl(240 4.8% 95.9%);
-  --color-muted-foreground: hsl(240 3.8% 46.1%);
+  --color-secondary: hsl(36 16% 94%);
+  --color-secondary-foreground: hsl(20 6% 12%);
 
-  --color-accent: hsl(262 83% 96%);
-  --color-accent-foreground: hsl(262 83% 30%);
+  --color-muted: hsl(36 16% 94%);
+  --color-muted-foreground: #6b6560;
+
+  /* Gold accent */
+  --color-accent: var(--color-gold-muted);
+  --color-accent-foreground: #8a6f1f;
 
   --color-destructive: hsl(0 84.2% 60.2%);
   --color-destructive-foreground: hsl(0 0% 98%);
 
-  --color-border: hsl(240 5.9% 90%);
-  --color-input: hsl(240 5.9% 90%);
-  --color-ring: hsl(262 83% 58%);
+  --color-border: #e8e4df;
+  --color-input: #e8e4df;
+  --color-ring: var(--color-gold);
 
-  --color-card: hsl(0 0% 100%);
-  --color-card-foreground: hsl(240 10% 3.9%);
+  --color-card: #ffffff;
+  --color-card-foreground: hsl(20 6% 12%);
 
-  --color-popover: hsl(0 0% 100%);
-  --color-popover-foreground: hsl(240 10% 3.9%);
+  --color-popover: #ffffff;
+  --color-popover-foreground: hsl(20 6% 12%);
 
   /* status colors used on appointment cards */
   --color-status-scheduled: hsl(217 91% 60%);
@@ -38,7 +49,21 @@
   --color-status-cancelled: hsl(240 3.8% 46.1%);
   --color-status-no-show: hsl(0 84.2% 60.2%);
 
+  /* Typography */
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+
   --radius: 0.625rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+
+  /* Layout */
+  --bottom-nav-height: 64px;
+
+  /* Shadows */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+  --shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-gold: 0 4px 12px rgba(201, 168, 76, 0.35);
 }
 
 @layer base {
@@ -56,7 +81,7 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
   }
 }
