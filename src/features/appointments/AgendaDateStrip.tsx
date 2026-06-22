@@ -29,7 +29,7 @@ export function AgendaDateStrip({ value, onChange }: AgendaDateStripProps) {
         <Button variant="ghost" size="icon" aria-label="Semana anterior" onClick={() => shiftWeek(-1)}>
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <span className="text-sm font-medium capitalize">
+        <span className="text-sm font-medium first-letter:uppercase">
           {format(selected, "MMMM 'de' yyyy", { locale: ptBR })}
         </span>
         <div className="flex items-center gap-1">
