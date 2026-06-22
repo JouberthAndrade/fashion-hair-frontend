@@ -37,6 +37,7 @@ export const collaboratorKeys = {
   lists: () => [...collaboratorKeys.all, 'list'] as const,
   detail: (id: string) => [...collaboratorKeys.all, 'detail', id] as const,
   workingHours: (id: string) => [...collaboratorKeys.all, id, 'working-hours'] as const,
+  serviceRates: (id: string) => [...collaboratorKeys.all, id, 'service-rates'] as const,
 };
 
 export const userKeys = {
