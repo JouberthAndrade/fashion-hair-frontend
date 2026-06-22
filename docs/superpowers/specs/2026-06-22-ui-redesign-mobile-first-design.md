@@ -49,7 +49,10 @@ Editar `src/index.css` (bloco `@theme`):
 ## C. Shell de layout
 
 `AppLayout.tsx` já tem sidebar desktop + Sheet drawer mobile. Mudanças:
-- **Sidebar (desktop ≥1024px / md atual)**: fundo dark (`brand-dark`), texto claro; item ativo com `gold-muted` de fundo + **borda-left 3px dourada**; bloco de usuário (nome/papel); logo "Fashion Hair" em Playfair.
+
+**Breakpoints (decisão explícita):** sidebar passa de `md:flex` (768px) para **`lg:flex` (≥1024px)**; `BottomNav` aparece **abaixo de `lg`** (`lg:hidden`). Tablet (768–1023px) usa bottom nav. Isso alinha com os breakpoints do prompt.
+
+- **Sidebar (desktop ≥1024px)**: fundo dark (`brand-dark`), texto claro; item ativo com `gold-muted` de fundo + **borda-left 3px dourada**; bloco de usuário (nome/papel); logo "Fashion Hair" em Playfair.
 - **`BottomNav.tsx` (novo, mobile <768px)**: itens **por papel** + **FAB dourado elevado** central abrindo Novo Agendamento.
   - ADMIN: Painel, Agenda, **+Novo**, Clientes, Caixa(`/fechamento-caixa`).
   - Colaborador: Agenda, Clientes, **+Novo**, Perfil.
