@@ -13,6 +13,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -90,6 +98,7 @@ export function CreateAppointmentDialog({
   const user = useAuthStore((s) => s.user);
   const isAdmin = user?.role === 'ADMIN';
   const createMut = useCreateAppointment();
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   const { data: services = [] } = useQuery({
     queryKey: serviceKeys.active(),
@@ -169,15 +178,8 @@ export function CreateAppointmentDialog({
     createMut.mutate({ ...base, ...clientPart }, { onSuccess: () => onOpenChange(false) });
   };
 
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl">
-        <DialogHeader>
-          <DialogTitle>Novo agendamento</DialogTitle>
-          <DialogDescription>Preencha os dados para criar um agendamento.</DialogDescription>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+  const formBody = (
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
           {isAdmin ? (
             <div className="space-y-2">
               <Label htmlFor="collaboratorId">Colaborador</Label>
@@ -350,8 +352,37 @@ export function CreateAppointmentDialog({
               )}
             </Button>
           </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+    </form>
+  );
+
+  // Desktop: centered dialog. Mobile/tablet: bottom sheet sliding up.
+  if (isDesktop) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Novo agendamento</DialogTitle>
+            <DialogDescription>Preencha os dados para criar um agendamento.</DialogDescription>
+          </DialogHeader>
+          {formBody}
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent
+        side="bottom"
+        className="max-h-[92vh] overflow-y-auto rounded-t-2xl pt-3"
+      >
+        <div className="mx-auto mb-3 h-1.5 w-10 rounded-full bg-border" aria-hidden />
+        <SheetHeader className="mb-4">
+          <SheetTitle>Novo agendamento</SheetTitle>
+          <SheetDescription>Preencha os dados para criar um agendamento.</SheetDescription>
+        </SheetHeader>
+        {formBody}
+      </SheetContent>
+    </Sheet>
   );
 }

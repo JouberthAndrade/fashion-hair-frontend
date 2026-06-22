@@ -2,16 +2,10 @@ import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
+import { Avatar } from '@/components/shared/Avatar';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { SPECIALTY_LABELS } from '@/lib/enumLabels';
 import type { Appointment, Specialty } from '@/api/types';
-
-function initials(name: string) {
-  const parts = name.trim().split(/\s+/);
-  const first = parts[0]?.[0] ?? '';
-  const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
-  return (first + last).toUpperCase();
-}
 
 interface CollaboratorAccordionCardProps {
   name: string;
@@ -37,9 +31,7 @@ export function CollaboratorAccordionCard({
         aria-expanded={open}
         className="flex w-full items-center gap-3 p-3 text-left"
       >
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold/15 text-sm font-medium text-accent-foreground">
-          {initials(name)}
-        </span>
+        <Avatar name={name} size="lg" />
         <span className="min-w-0 flex-1">
           <span className="block truncate font-medium leading-tight">{name}</span>
           <span className="block text-xs text-muted-foreground">
