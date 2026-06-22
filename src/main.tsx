@@ -7,14 +7,17 @@ import { Toaster } from 'sonner';
 
 import { router } from '@/routes/router';
 import { queryClient } from '@/lib/queryClient';
+import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
 import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      <Toaster position="top-right" richColors closeButton />
-      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <Toaster position="top-right" richColors closeButton />
+        <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+      </QueryClientProvider>
+    </ErrorBoundary>
   </StrictMode>,
 );

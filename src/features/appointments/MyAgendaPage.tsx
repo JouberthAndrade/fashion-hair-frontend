@@ -6,14 +6,13 @@ import { listMyAppointments } from '@/api/appointments';
 import { appointmentKeys } from '@/lib/queryKeys';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { todayISO, formatDateLong, formatCurrency } from '@/lib/date';
 import { CreateAppointmentDialog } from './CreateAppointmentDialog';
+import { AgendaDateStrip } from './AgendaDateStrip';
 import { AppointmentActionsMenu } from './AppointmentActionsMenu';
 import type { Appointment } from '@/api/types';
 
@@ -38,25 +37,13 @@ export function MyAgendaPage() {
         title="Minha agenda"
         description={formatDateLong(date)}
         actions={
-          <>
-            <div className="flex items-center gap-2">
-              <Label htmlFor="agenda-date" className="sr-only">
-                Data
-              </Label>
-              <Input
-                id="agenda-date"
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-44"
-              />
-            </div>
-            <Button onClick={() => setDialogOpen(true)}>
-              <Plus className="h-4 w-4" /> Novo agendamento
-            </Button>
-          </>
+          <Button onClick={() => setDialogOpen(true)}>
+            <Plus className="h-4 w-4" /> Novo agendamento
+          </Button>
         }
       />
+
+      <AgendaDateStrip value={date} onChange={setDate} />
 
       {isLoading ? (
         <div className="space-y-3">

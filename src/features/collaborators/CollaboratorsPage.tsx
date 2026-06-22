@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { PageHeader } from '@/components/shared/PageHeader';
+import { Avatar } from '@/components/shared/Avatar';
 import { useAuthStore } from '@/stores/authStore';
 import { SPECIALTY_LABELS } from '@/lib/enumLabels';
 import { CollaboratorProfileDialog } from './CollaboratorProfileDialog';
@@ -64,15 +65,7 @@ export function CollaboratorsPage() {
               <Card key={c.id}>
                 <CardContent className="space-y-3 p-4">
                   <div className="flex items-start gap-3">
-                    <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-muted">
-                      {profile?.avatarUrl ? (
-                        <img src={profile.avatarUrl} alt={c.name} className="h-full w-full object-cover" />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center text-muted-foreground">
-                          <UserCog className="h-5 w-5" />
-                        </div>
-                      )}
-                    </div>
+                    <Avatar name={c.name} src={profile?.avatarUrl} size="xl" />
                     <div className="min-w-0 flex-1">
                       <h3 className="truncate font-semibold">{c.name}</h3>
                       <p className="text-sm text-muted-foreground">

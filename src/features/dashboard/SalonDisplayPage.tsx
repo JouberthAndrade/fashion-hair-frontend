@@ -1,6 +1,16 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Maximize2, Minimize2, RefreshCw } from 'lucide-react';
+import {
+  Maximize2,
+  Minimize2,
+  RefreshCw,
+  CalendarRange,
+  CalendarClock,
+  Scissors,
+  CheckCircle2,
+  Ban,
+  UserX,
+} from 'lucide-react';
 
 import { getDailyDashboard } from '@/api/dashboard';
 import { dashboardKeys } from '@/lib/queryKeys';
@@ -8,9 +18,11 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { PageHeader } from '@/components/shared/PageHeader';
+import { StatusCard } from '@/components/shared/StatusCard';
 import { useFullscreen } from '@/hooks/useFullscreen';
 import { todayISO, formatDateLong } from '@/lib/date';
 import { CollaboratorColumn } from './CollaboratorColumn';
+import { CollaboratorAccordionCard } from './CollaboratorAccordionCard';
 
 const REFRESH_MS = 30_000;
 
@@ -53,33 +65,13 @@ export function SalonDisplayPage() {
       />
 
       {summary ? (
-        <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-6">
-          <SummaryCard label="Total" value={summary.totalAppointments} className="bg-card" />
-          <SummaryCard
-            label="Agendados"
-            value={summary.scheduled}
-            className="bg-blue-50 text-blue-900"
-          />
-          <SummaryCard
-            label="Em atendimento"
-            value={summary.inProgress}
-            className="bg-yellow-50 text-yellow-900"
-          />
-          <SummaryCard
-            label="Concluídos"
-            value={summary.done}
-            className="bg-green-50 text-green-900"
-          />
-          <SummaryCard
-            label="Cancelados"
-            value={summary.cancelled}
-            className="bg-gray-50 text-gray-700"
-          />
-          <SummaryCard
-            label="Não compareceu"
-            value={summary.noShow}
-            className="bg-red-50 text-red-900"
-          />
+        <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+          <StatusCard label="Total" value={summary.totalAppointments} icon={CalendarRange} tone="total" />
+          <StatusCard label="Agendados" value={summary.scheduled} icon={CalendarClock} tone="scheduled" />
+          <StatusCard label="Em atendimento" value={summary.inProgress} icon={Scissors} tone="in-progress" />
+          <StatusCard label="Concluídos" value={summary.done} icon={CheckCircle2} tone="done" />
+          <StatusCard label="Cancelados" value={summary.cancelled} icon={Ban} tone="cancelled" />
+          <StatusCard label="Não compareceu" value={summary.noShow} icon={UserX} tone="no-show" />
         </div>
       ) : null}
 
@@ -101,41 +93,40 @@ export function SalonDisplayPage() {
           description="Cadastre colaboradores para visualizar o painel."
         />
       ) : (
-        <div
-          className={`grid h-[calc(100vh-220px)] gap-4 ${
-            collaborators.length <= 2
-              ? 'grid-cols-1 md:grid-cols-2'
-              : collaborators.length <= 4
-                ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-4'
-                : 'grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'
-          }`}
-        >
-          {collaborators.map((c) => (
-            <CollaboratorColumn
-              key={c.id}
-              name={c.name}
-              specialty={c.collaboratorProfile?.specialty}
-              avatarUrl={c.collaboratorProfile?.avatarUrl}
-              appointments={c.appointments}
-            />
-          ))}
-        </div>
+        <>
+          {/* Mobile / tablet: stacked expandable cards */}
+          <div className="space-y-3 lg:hidden">
+            {collaborators.map((c) => (
+              <CollaboratorAccordionCard
+                key={c.id}
+                name={c.name}
+                specialty={c.collaboratorProfile?.specialty}
+                appointments={c.appointments}
+                defaultOpen={collaborators.length === 1}
+              />
+            ))}
+          </div>
+
+          {/* Desktop / TV display: side-by-side columns */}
+          <div
+            className={`hidden h-[calc(100vh-220px)] gap-4 lg:grid ${
+              collaborators.length <= 4
+                ? 'grid-cols-2 xl:grid-cols-4'
+                : 'grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'
+            }`}
+          >
+            {collaborators.map((c) => (
+              <CollaboratorColumn
+                key={c.id}
+                name={c.name}
+                specialty={c.collaboratorProfile?.specialty}
+                avatarUrl={c.collaboratorProfile?.avatarUrl}
+                appointments={c.appointments}
+              />
+            ))}
+          </div>
+        </>
       )}
     </>
-  );
-}
-
-interface SummaryCardProps {
-  label: string;
-  value: number;
-  className?: string;
-}
-
-function SummaryCard({ label, value, className }: SummaryCardProps) {
-  return (
-    <div className={`rounded-xl border p-3 ${className ?? ''}`}>
-      <p className="text-xs font-medium uppercase tracking-wide opacity-70">{label}</p>
-      <p className="mt-1 text-2xl font-bold tabular-nums">{value}</p>
-    </div>
   );
 }
