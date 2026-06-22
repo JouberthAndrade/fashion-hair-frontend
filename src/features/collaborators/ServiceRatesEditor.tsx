@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -23,6 +23,10 @@ export function ServiceRatesEditor({ collaboratorId }: Props) {
   });
 
   const [drafts, setDrafts] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    setDrafts({});
+  }, [collaboratorId]);
 
   const mutation = useMutation({
     mutationFn: () => {
@@ -88,7 +92,7 @@ export function ServiceRatesEditor({ collaboratorId }: Props) {
                   />
                 </td>
                 <td className="px-3 py-2 text-center tabular-nums text-muted-foreground">
-                  {effectiveDisplay(r).toFixed(1)}%
+                  {(effectiveDisplay(r) ?? 0).toFixed(1)}%
                 </td>
               </tr>
             ))}
