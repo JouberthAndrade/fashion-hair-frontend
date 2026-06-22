@@ -9,14 +9,14 @@ import type { Appointment, Specialty } from '@/api/types';
 
 interface CollaboratorAccordionCardProps {
   name: string;
-  specialty: Specialty | null | undefined;
+  specialties: Specialty[];
   appointments: Appointment[];
   defaultOpen?: boolean;
 }
 
 export function CollaboratorAccordionCard({
   name,
-  specialty,
+  specialties,
   appointments,
   defaultOpen = false,
 }: CollaboratorAccordionCardProps) {
@@ -35,7 +35,9 @@ export function CollaboratorAccordionCard({
         <span className="min-w-0 flex-1">
           <span className="block truncate font-medium leading-tight">{name}</span>
           <span className="block text-xs text-muted-foreground">
-            {specialty ? SPECIALTY_LABELS[specialty] : 'Colaborador'}
+            {specialties.length > 0
+              ? specialties.map((s) => SPECIALTY_LABELS[s]).join(' · ')
+              : 'Colaborador'}
           </span>
         </span>
         <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium tabular-nums">

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { CalendarClock, Pencil, UserCog } from 'lucide-react';
+import { CalendarClock, Pencil, UserCog, Wallet } from 'lucide-react';
 
 import { listCollaborators } from '@/api/collaborators';
 import { collaboratorKeys } from '@/lib/queryKeys';
@@ -14,6 +14,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { SPECIALTY_LABELS } from '@/lib/enumLabels';
 import { CollaboratorProfileDialog } from './CollaboratorProfileDialog';
 import { WorkingHoursEditor } from './WorkingHoursEditor';
+import { ServiceRatesEditor } from './ServiceRatesEditor';
 import type { Collaborator } from '@/api/types';
 
 export function CollaboratorsPage() {
@@ -29,6 +30,7 @@ export function CollaboratorsPage() {
 
   const [profileDialog, setProfileDialog] = useState<Collaborator | null>(null);
   const [hoursOpenFor, setHoursOpenFor] = useState<string | null>(null);
+  const [ratesOpenFor, setRatesOpenFor] = useState<string | null>(null);
 
   const canEdit = (id: string) => isAdmin || id === userId;
 
@@ -69,7 +71,9 @@ export function CollaboratorsPage() {
                     <div className="min-w-0 flex-1">
                       <h3 className="truncate font-semibold">{c.name}</h3>
                       <p className="text-sm text-muted-foreground">
-                        {profile?.specialty ? SPECIALTY_LABELS[profile.specialty] : 'Sem especialidade'}
+                        {profile?.specialties?.length
+                          ? profile.specialties.map((s) => SPECIALTY_LABELS[s]).join(' · ')
+                          : 'Sem especialidade'}
                       </p>
                       <p className="truncate text-xs text-muted-foreground">{c.email}</p>
                       {profile?.bio ? (
@@ -101,6 +105,24 @@ export function CollaboratorsPage() {
                       {isHoursOpen ? (
                         <div className="mt-3">
                           <WorkingHoursEditor collaboratorId={c.id} />
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : null}
+
+                  {isAdmin ? (
+                    <div className="border-t pt-3">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setRatesOpenFor(ratesOpenFor === c.id ? null : c.id)}
+                      >
+                        <Wallet className="h-4 w-4" />
+                        {ratesOpenFor === c.id ? 'Fechar taxas' : 'Taxas por serviço'}
+                      </Button>
+                      {ratesOpenFor === c.id ? (
+                        <div className="mt-3">
+                          <ServiceRatesEditor collaboratorId={c.id} />
                         </div>
                       ) : null}
                     </div>

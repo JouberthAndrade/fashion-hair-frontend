@@ -84,7 +84,9 @@ export function CollaboratorProfileSection({ userId }: CollaboratorProfileSectio
             </div>
             <div className="min-w-0 space-y-1 text-sm">
               <p className="font-medium">
-                {profile?.specialty ? SPECIALTY_LABELS[profile.specialty] : 'Sem especialidade'}
+                {profile?.specialties?.length
+                  ? profile.specialties.map((s) => SPECIALTY_LABELS[s]).join(' · ')
+                  : 'Sem especialidade'}
               </p>
               {profile?.bio ? (
                 <p className="text-muted-foreground">{profile.bio}</p>
