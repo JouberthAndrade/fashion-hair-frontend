@@ -100,7 +100,7 @@ export function SalonDisplayPage() {
               <CollaboratorAccordionCard
                 key={c.id}
                 name={c.name}
-                specialty={c.collaboratorProfile?.specialty}
+                specialties={c.collaboratorProfile?.specialties ?? []}
                 appointments={c.appointments}
                 defaultOpen={collaborators.length === 1}
               />
@@ -119,7 +119,7 @@ export function SalonDisplayPage() {
               <CollaboratorColumn
                 key={c.id}
                 name={c.name}
-                specialty={c.collaboratorProfile?.specialty}
+                specialties={c.collaboratorProfile?.specialties ?? []}
                 avatarUrl={c.collaboratorProfile?.avatarUrl}
                 appointments={c.appointments}
               />

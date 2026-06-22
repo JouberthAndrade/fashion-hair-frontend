@@ -13,7 +13,6 @@ export type PublicService = {
   name: string;
   description: string | null;
   durationMin: number;
-  price: number;
   specialty: Specialty | null;
 };
 
@@ -50,7 +49,7 @@ export type PublicAppointmentResult = {
   scheduledDate: string;
   startTime: string;
   endTime: string;
-  service: { id: string; name: string; durationMin: number; price: number };
+  service: { id: string; name: string; durationMin: number };
   collaborator: { id: string; name: string };
   client: { name: string; email: string };
 };

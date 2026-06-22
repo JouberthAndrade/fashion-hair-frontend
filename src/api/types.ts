@@ -50,16 +50,24 @@ export interface User {
   isActive: boolean;
   createdAt: string;
   collaboratorProfile?: {
-    specialty: Specialty;
+    specialties: Specialty[];
     avatarUrl: string | null;
   } | null;
 }
 
 export interface CollaboratorProfile {
   id: string;
-  specialty: Specialty;
+  specialties: Specialty[];
   bio: string | null;
   avatarUrl: string | null;
+}
+
+export interface CollaboratorServiceRateItem {
+  serviceId: string;
+  serviceName: string;
+  durationMin: number;
+  configuredRate: number | null;
+  effectiveRate: number;
 }
 
 export interface WorkingHour {
@@ -151,7 +159,7 @@ export interface DailyDashboardResponse {
   collaborators: Array<{
     id: string;
     name: string;
-    collaboratorProfile: { specialty: Specialty; avatarUrl: string | null } | null;
+    collaboratorProfile: { specialties: Specialty[]; avatarUrl: string | null } | null;
     appointments: Appointment[];
   }>;
 }

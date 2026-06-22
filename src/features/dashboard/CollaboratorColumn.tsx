@@ -6,14 +6,14 @@ import type { Appointment, Specialty } from '@/api/types';
 
 interface CollaboratorColumnProps {
   name: string;
-  specialty: Specialty | null | undefined;
+  specialties: Specialty[];
   avatarUrl: string | null | undefined;
   appointments: Appointment[];
 }
 
 export function CollaboratorColumn({
   name,
-  specialty,
+  specialties,
   avatarUrl,
   appointments,
 }: CollaboratorColumnProps) {
@@ -34,7 +34,9 @@ export function CollaboratorColumn({
         <div className="min-w-0">
           <h2 className="truncate text-lg font-semibold leading-tight">{name}</h2>
           <p className="text-xs text-muted-foreground">
-            {specialty ? SPECIALTY_LABELS[specialty] : 'Colaborador'}
+            {specialties.length > 0
+              ? specialties.map((s) => SPECIALTY_LABELS[s]).join(' · ')
+              : 'Colaborador'}
           </p>
         </div>
         <span className="ml-auto rounded-full bg-secondary px-3 py-1 text-xs font-medium tabular-nums">

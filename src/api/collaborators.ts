@@ -1,5 +1,5 @@
 import { api } from './client';
-import type { Collaborator, Specialty, WorkingHour, DayOfWeek } from './types';
+import type { Collaborator, CollaboratorServiceRateItem, Specialty, WorkingHour, DayOfWeek } from './types';
 
 export async function listCollaborators(): Promise<Collaborator[]> {
   const { data } = await api.get<Collaborator[]>('/collaborators');
@@ -13,7 +13,7 @@ export async function getCollaborator(id: string): Promise<Collaborator> {
 
 export async function upsertProfile(
   id: string,
-  payload: { specialty: Specialty; bio?: string; avatarUrl?: string },
+  payload: { specialties: Specialty[]; bio?: string; avatarUrl?: string },
 ): Promise<unknown> {
   const { data } = await api.put(`/collaborators/${id}/profile`, payload);
   return data;
@@ -33,5 +33,21 @@ export interface WorkingHourInput {
 
 export async function upsertWorkingHours(id: string, workingHours: WorkingHourInput[]): Promise<WorkingHour[]> {
   const { data } = await api.put<WorkingHour[]>(`/collaborators/${id}/working-hours`, { workingHours });
+  return data;
+}
+
+export async function getServiceRates(id: string): Promise<CollaboratorServiceRateItem[]> {
+  const { data } = await api.get<CollaboratorServiceRateItem[]>(`/collaborators/${id}/service-rates`);
+  return data;
+}
+
+export async function updateServiceRates(
+  id: string,
+  rates: Array<{ serviceId: string; ratePercent: number | null }>,
+): Promise<CollaboratorServiceRateItem[]> {
+  const { data } = await api.put<CollaboratorServiceRateItem[]>(
+    `/collaborators/${id}/service-rates`,
+    { rates },
+  );
   return data;
 }

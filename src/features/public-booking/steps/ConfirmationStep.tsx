@@ -1,6 +1,6 @@
 import { CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { formatCurrency, formatDateLong } from '@/lib/date';
+import { formatDateLong } from '@/lib/date';
 import type { PublicAppointmentResult } from '@/api/publicBooking';
 
 type Props = {
@@ -29,7 +29,6 @@ export function ConfirmationStep({ result, onNewBooking }: Props) {
           {formatDateLong(result.scheduledDate)} · {result.startTime} – {result.endTime}
         </p>
         <p className="mt-1 text-muted-foreground">Com {result.collaborator.name}</p>
-        <p className="mt-3 font-semibold text-primary">{formatCurrency(result.service.price)}</p>
       </div>
 
       <Button type="button" className="w-full" onClick={onNewBooking}>

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -18,14 +18,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { upsertProfile } from '@/api/collaborators';
 import { getApiErrorMessage } from '@/api/client';
 import { collaboratorKeys } from '@/lib/queryKeys';
 import { SPECIALTY_LABELS } from '@/lib/enumLabels';
 import type { Collaborator, Specialty } from '@/api/types';
 
-const SPECIALTIES: Specialty[] = [
+const ALL_SPECIALTIES: Specialty[] = [
   'HAIRDRESSER',
   'MANICURE',
   'PEDICURE',
@@ -35,14 +35,9 @@ const SPECIALTIES: Specialty[] = [
 ];
 
 const schema = z.object({
-  specialty: z.enum([
-    'HAIRDRESSER',
-    'MANICURE',
-    'PEDICURE',
-    'MAKEUP_ARTIST',
-    'EYEBROW',
-    'AESTHETICIAN',
-  ]),
+  specialties: z.array(z.enum([
+    'HAIRDRESSER', 'MANICURE', 'PEDICURE', 'MAKEUP_ARTIST', 'EYEBROW', 'AESTHETICIAN',
+  ] as const)).min(1, 'Selecione ao menos uma especialidade'),
   bio: z.string().max(500).optional().or(z.literal('')),
   avatarUrl: z.string().url('URL inválida').optional().or(z.literal('')),
 });
@@ -62,27 +57,45 @@ export function CollaboratorProfileDialog({ open, onOpenChange, collaborator }: 
     register,
     handleSubmit,
     reset,
-    control,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { specialty: 'HAIRDRESSER', bio: '', avatarUrl: '' },
+    defaultValues: { specialties: ['HAIRDRESSER'], bio: '', avatarUrl: '' },
   });
 
   useEffect(() => {
     if (open) {
       reset({
-        specialty: collaborator.collaboratorProfile?.specialty ?? 'HAIRDRESSER',
+        specialties:
+          collaborator.collaboratorProfile?.specialties?.length
+            ? collaborator.collaboratorProfile.specialties
+            : ['HAIRDRESSER'],
         bio: collaborator.collaboratorProfile?.bio ?? '',
         avatarUrl: collaborator.collaboratorProfile?.avatarUrl ?? '',
       });
     }
   }, [open, collaborator, reset]);
 
+  const selectedSpecialties = watch('specialties');
+
+  const toggleSpecialty = (s: Specialty) => {
+    if (selectedSpecialties.includes(s)) {
+      setValue(
+        'specialties',
+        selectedSpecialties.filter((x) => x !== s),
+        { shouldValidate: true },
+      );
+    } else {
+      setValue('specialties', [...selectedSpecialties, s], { shouldValidate: true });
+    }
+  };
+
   const mutation = useMutation({
     mutationFn: (values: FormValues) =>
       upsertProfile(collaborator.id, {
-        specialty: values.specialty,
+        specialties: values.specialties,
         bio: values.bio?.trim() ? values.bio.trim() : undefined,
         avatarUrl: values.avatarUrl?.trim() ? values.avatarUrl.trim() : undefined,
       }),
@@ -104,26 +117,24 @@ export function CollaboratorProfileDialog({ open, onOpenChange, collaborator }: 
         </DialogHeader>
         <form onSubmit={handleSubmit((v) => mutation.mutate(v))} className="space-y-4" noValidate>
           <div className="space-y-2">
-            <Label>Especialidade</Label>
-            <Controller
-              control={control}
-              name="specialty"
-              render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {SPECIALTIES.map((s) => (
-                      <SelectItem key={s} value={s}>
-                        {SPECIALTY_LABELS[s]}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {errors.specialty ? <p className="text-xs text-destructive">{errors.specialty.message}</p> : null}
+            <Label>Especialidades</Label>
+            <div className="grid grid-cols-2 gap-2">
+              {ALL_SPECIALTIES.map((s) => (
+                <label
+                  key={s}
+                  className="flex cursor-pointer items-center gap-2 rounded-lg border border-border p-2 hover:bg-secondary"
+                >
+                  <Checkbox
+                    checked={selectedSpecialties.includes(s)}
+                    onCheckedChange={() => toggleSpecialty(s)}
+                  />
+                  <span className="text-sm">{SPECIALTY_LABELS[s]}</span>
+                </label>
+              ))}
+            </div>
+            {errors.specialties ? (
+              <p className="text-xs text-destructive">{errors.specialties.message}</p>
+            ) : null}
           </div>
 
           <div className="space-y-2">
