@@ -1,6 +1,5 @@
 import { Clock, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { formatCurrency } from '@/lib/date';
 import type { PublicService } from '@/api/publicBooking';
 
 type Props = {
@@ -26,7 +25,7 @@ export function ServiceCard({ service, onPick }: Props) {
           ) : null}
           <p className="mt-3 flex items-center gap-1 text-xs text-muted-foreground">
             <Clock className="h-3.5 w-3.5" />
-            {service.durationMin} min · {formatCurrency(service.price)}
+            {service.durationMin} min
           </p>
         </div>
         <ChevronRight className="mt-1 h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />

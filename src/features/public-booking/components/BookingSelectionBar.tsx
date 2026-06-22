@@ -1,6 +1,5 @@
 import { ArrowLeft, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { formatCurrency } from '@/lib/date';
 import type { PublicService } from '@/api/publicBooking';
 
 type Props = {
@@ -16,7 +15,7 @@ export function BookingSelectionBar({ service, onChangeService }: Props) {
         <p className="truncate font-semibold">{service.name}</p>
         <p className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">
           <Clock className="h-3 w-3" />
-          {service.durationMin} min · {formatCurrency(service.price)}
+          {service.durationMin} min
         </p>
       </div>
       <Button type="button" variant="ghost" size="sm" className="shrink-0" onClick={onChangeService}>

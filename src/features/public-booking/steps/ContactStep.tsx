@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PhoneInput } from '@/components/shared/PhoneInput';
 import { isValidBRPhone } from '@/lib/phone';
-import { formatCurrency, formatDateLong } from '@/lib/date';
+import { formatDateLong } from '@/lib/date';
 import type { PublicCollaborator, PublicService } from '@/api/publicBooking';
 
 const schema = z.object({
@@ -71,7 +71,6 @@ export function ContactStep({
         <p className="text-muted-foreground">
           {formatDateLong(scheduledDate)} às {startTime} · {collaborator.name}
         </p>
-        <p className="mt-1 font-semibold text-primary">{formatCurrency(service.price)}</p>
       </div>
 
       <div className="space-y-4">
